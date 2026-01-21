@@ -25,8 +25,7 @@ const stockService = {
       const res = await api.post('/stocks', data);
       return res.data;
     } catch (error) {
-      console.error('Create stock error:', error);
-      return null;
+      throw error;
     }
   },
   list: async () => {
@@ -104,6 +103,71 @@ const stockService = {
       return res.data.data;
     } catch (error) {
       console.error('Products by quantity order error:', error);
+      return null;
+    }
+  },
+  stockAreaChart: async (params?: { warehouse?: string }) => {
+    try {
+      const res = await api.get('/stocks/stats/area-chart', {
+        params,
+      });
+      return res.data.data;
+    } catch (error) {
+      return null;
+    }
+  },
+  totalStockQuantity: async (warehouseId?: string) => {
+    try {
+      const res = await api.get('/stocks/stats/total-stock-quantity', {
+        params: warehouseId ? { warehouseId } : undefined,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Total stock quantity error:', error);
+      return null;
+    }
+  },
+  totalInventoryValue: async (warehouseId?: string) => {
+    try {
+      const res = await api.get('/stocks/stats/total-inventory-value', {
+        params: warehouseId ? { warehouseId } : undefined,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Total inventory value error:', error);
+      return null;
+    }
+  },
+  outOfStockProductCount: async (warehouseId?: string) => {
+    try {
+      const res = await api.get('/stocks/stats/out-of-stock-product-count', {
+        params: warehouseId ? { warehouseId } : undefined,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Out-of-stock product count error:', error);
+      return null;
+    }
+  },
+  inactiveProductCount: async (warehouseId?: string) => {
+    try {
+      const res = await api.get('/stocks/stats/inactive-product-count', {
+        params: warehouseId ? { warehouseId } : undefined,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Inactive product count error:', error);
+      return null;
+    }
+  },
+  activeProductCount: async (warehouseId?: string) => {
+    try {
+      const res = await api.get('/stocks/stats/active-product-count', {
+        params: warehouseId ? { warehouseId } : undefined,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Active product count error:', error);
       return null;
     }
   },

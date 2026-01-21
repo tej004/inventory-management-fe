@@ -46,12 +46,12 @@ export default function StockTopQuantityCard({
   } satisfies ChartConfig;
 
   return (
-    <Card className="flex flex-col h-full min-h-[340px]">
+    <Card className="flex flex-col h-full min-h-85">
       <CardHeader>
         <CardTitle>Top Products by Quantity</CardTitle>
         <CardDescription>Most stocked products</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center items-center min-h-[220px] overflow-auto">
+      <CardContent className="flex flex-1 justify-center items-center min-h-55 overflow-auto">
         {isLoading ? (
           <div className="flex items-center justify-center w-full h-32">
             Loading...
@@ -63,7 +63,7 @@ export default function StockTopQuantityCard({
         ) : (
           <ChartContainer
             config={chartConfig}
-            className="w-full max-w-[260px] min-w-[180px] mx-auto"
+            className="w-full max-w-65 min-w-45 mx-auto"
           >
             <BarChart
               accessibilityLayer
@@ -76,9 +76,27 @@ export default function StockTopQuantityCard({
                 dataKey="name"
                 type="category"
                 tickLine={false}
-                tickMargin={10}
+                tickMargin={12}
                 axisLine={false}
-                tickFormatter={(value) => value.slice(0, 16)}
+                width={120}
+                tick={({ x, y, payload }) => (
+                  <>
+                    <title>{payload.value}</title>
+                    <text
+                      x={x}
+                      y={y}
+                      fontSize={13}
+                      fill="#334155"
+                      textAnchor="end"
+                      alignmentBaseline="middle"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {payload.value.length > 20
+                        ? payload.value.slice(0, 20) + '...'
+                        : payload.value}
+                    </text>
+                  </>
+                )}
               />
               <ChartTooltip
                 cursor={false}

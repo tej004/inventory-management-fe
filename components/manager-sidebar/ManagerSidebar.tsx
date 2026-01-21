@@ -1,5 +1,12 @@
 import Link from 'next/link';
-import { Home, Boxes, Package, BarChart } from 'lucide-react';
+import {
+  Home,
+  Boxes,
+  Package,
+  BarChart,
+  CreditCard,
+  Repeat,
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +23,8 @@ const navItems = [
   { label: 'Stocks', href: '/manager/stocks', icon: Boxes },
   { label: 'Warehouses', href: '/manager/warehouses', icon: Package },
   { label: 'Products', href: '/manager/products', icon: BarChart },
+  { label: 'Transactions', href: '/manager/transactions', icon: CreditCard },
+  { label: 'Transfers', href: '/manager/transfers', icon: Repeat },
 ];
 
 import { SidebarTrigger } from '@/components/ui/sidebar';

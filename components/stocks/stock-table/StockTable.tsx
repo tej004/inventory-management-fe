@@ -10,11 +10,29 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/react-table';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import stockService from '@/services/stock.service';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import StockModal from './StockModal';
+import { formatNumberShort } from '@/lib/formatNumberShort';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { MoreHorizontal } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Stock {
   uuid?: string;
@@ -47,14 +65,32 @@ interface StockTableProps {
 
 const columns: ColumnDef<Stock>[] = [
   {
+    header: 'SKU',
+    accessorKey: 'product.sku',
+    cell: ({ row }) => <span>{row.original.product?.sku ?? '-'}</span>,
+  },
+  {
     header: 'Product Name',
     accessorKey: 'product.name',
     cell: ({ row }) => <span>{row.original.product?.name ?? '-'}</span>,
   },
   {
-    header: 'SKU',
-    accessorKey: 'product.sku',
-    cell: ({ row }) => <span>{row.original.product?.sku ?? '-'}</span>,
+    header: 'Unit Cost',
+    accessorKey: 'product.unitCost',
+    cell: ({ row }) => {
+      const unitCost = row.original.product?.unitCost;
+      return unitCost !== undefined && unitCost !== null
+        ? `$${unitCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        : '-';
+    },
+  },
+  {
+    header: 'Quantity',
+    accessorKey: 'quantity',
+    cell: ({ row }) => {
+      const quantity = row.original.quantity;
+      return formatNumberShort(quantity);
+    },
   },
   {
     header: 'Category',
@@ -73,11 +109,8 @@ const columns: ColumnDef<Stock>[] = [
       const quantity = row.original.quantity;
       const reorderPoint = row.original.product?.reorderPoint ?? 0;
       let status = 'In Stock';
-      let variant: 'default' | 'destructive' | 'outline' = 'outline';
-      if (quantity <= reorderPoint) {
-        status = 'Needs Reordering';
-        variant = 'destructive';
-      } else if (quantity <= reorderPoint * 1.2) {
+      let variant: 'default' | 'outline' = 'outline';
+      if (quantity <= reorderPoint * 1.2) {
         status = 'Low Stock';
         variant = 'default';
       }
@@ -87,15 +120,41 @@ const columns: ColumnDef<Stock>[] = [
 ];
 
 export default function StockTable({ warehouseId }: StockTableProps) {
+  const queryClient = useQueryClient();
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const [filterInput, setFilterInput] = React.useState('');
   const [filter, setFilter] = React.useState('');
   const [page, setPage] = React.useState(1);
-  const [limit] = React.useState(10);
+  const [limit, setLimit] = React.useState(10);
+  const [statusFilter, setStatusFilter] = React.useState<
+    'all' | 'inStock' | 'lowStock'
+  >('all');
+
+  React.useEffect(() => {
+    const t = setTimeout(() => {
+      setFilter(filterInput);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(t);
+  }, [filterInput]);
 
   const params: Record<string, any> = { page, limit, search: filter };
   if (warehouseId !== undefined) params.warehouse = warehouseId;
+  if (statusFilter === 'inStock') {
+    params.status = 'inStock';
+  } else if (statusFilter === 'lowStock') {
+    params.status = 'lowStock';
+  }
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['paginatedStocks', page, limit, filter, warehouseId],
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: [
+      'paginatedStocks',
+      page,
+      limit,
+      filter,
+      warehouseId,
+      statusFilter,
+    ],
     queryFn: () => stockService.listPaginated(params),
   });
 
@@ -114,19 +173,81 @@ export default function StockTable({ warehouseId }: StockTableProps) {
     pageCount: totalPages,
   });
 
+  async function handleDeleteStock(uuid?: string) {
+    if (!uuid) return;
+    if (!window.confirm('Delete this stock?')) return;
+    const ok = await stockService.delete(uuid);
+    if (ok) {
+      toast.success('Stock deleted');
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['totalInventoryValue'] }),
+        queryClient.invalidateQueries({ queryKey: ['outOfStockProductCount'] }),
+        queryClient.invalidateQueries({
+          queryKey: ['productsByQuantityOrder'],
+        }),
+        queryClient.invalidateQueries({ queryKey: ['inactiveProductCount'] }),
+        queryClient.invalidateQueries({ queryKey: ['stockStatusPie'] }),
+        queryClient.invalidateQueries({ queryKey: ['activeProductCount'] }),
+        queryClient.invalidateQueries({ queryKey: ['totalStockQuantity'] }),
+        queryClient.invalidateQueries({ queryKey: ['stockAreaChart'] }),
+        queryClient.invalidateQueries({ queryKey: ['warehouses'] }),
+      ]);
+      refetch();
+    } else {
+      toast.error('Failed to delete stock');
+    }
+  }
+
   React.useEffect(() => {
     table.setPageIndex(page - 1);
   }, [page, table]);
 
+  function handleCreate() {
+    setModalOpen(true);
+  }
+
   return (
     <div className="w-full">
-      <div className="flex flex-row items-center gap-2 py-4 w-full flex-wrap">
+      <StockModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onCreated={() => {
+          refetch();
+        }}
+        filterByWarehouseId={warehouseId}
+      />
+      <div className="flex flex-row items-center gap-2 pb-4 w-full flex-wrap">
         <Input
           placeholder="Filter by product or warehouse..."
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
+          value={filterInput}
+          onChange={(e) => setFilterInput(e.target.value)}
           className="min-w-0 w-full sm:w-1/4 max-w-full"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-36 justify-between">
+              {statusFilter === 'all'
+                ? 'All Status'
+                : statusFilter === 'inStock'
+                  ? 'In Stock'
+                  : 'Low Stock'}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-36">
+            <DropdownMenuItem onSelect={() => setStatusFilter('all')}>
+              All Statuses
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setStatusFilter('inStock')}>
+              In Stock
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setStatusFilter('lowStock')}>
+              Low Stock
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button variant="default" onClick={handleCreate} className="ml-auto">
+          Create New Stock
+        </Button>
       </div>
       <div className="overflow-x-auto overflow-y-visible rounded-md border w-full max-w-full">
         <table className="min-w-150 w-full text-sm">
@@ -146,6 +267,9 @@ export default function StockTable({ warehouseId }: StockTableProps) {
                         )}
                   </th>
                 ))}
+                <th className="px-2 py-1 bg-muted text-left font-semibold">
+                  Actions
+                </th>
               </tr>
             ))}
           </thead>
@@ -178,9 +302,9 @@ export default function StockTable({ warehouseId }: StockTableProps) {
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map((row: any) => (
                 <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell: any) => (
                     <td key={cell.id} className="px-2 py-1">
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -188,6 +312,23 @@ export default function StockTable({ warehouseId }: StockTableProps) {
                       )}
                     </td>
                   ))}
+                  <td className="px-2 py-1">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteStock(row.original.uuid)}
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </td>
                 </tr>
               ))
             )}
@@ -201,14 +342,25 @@ export default function StockTable({ warehouseId }: StockTableProps) {
         </div>
         <div className="flex w-full items-center gap-6 sm:w-fit">
           <div className="hidden items-center gap-2 sm:flex">
-            <span className="text-sm font-medium">Rows per page</span>
-            <select
-              value={limit}
-              disabled
-              className="w-20 rounded border px-2 py-1 text-sm bg-background"
+            <Label htmlFor="rows-per-page" className="text-sm font-medium">
+              Rows per page
+            </Label>
+            <Select
+              value={String(limit)}
+              onValueChange={(value) => {
+                setLimit(Number(value));
+                setPage(1);
+              }}
             >
-              <option value={10}>10</option>
-            </select>
+              <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                <SelectValue placeholder={limit} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="25">25</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex w-fit items-center justify-center text-sm font-medium">
             Page {page} of {totalPages || 1}

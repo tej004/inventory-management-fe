@@ -3,6 +3,7 @@ import StocksSectionCards from '@/components/stocks/section-cards/StocksSectionC
 import StockTable from '@/components/stocks/stock-table/StockTable';
 import WarehouseFilter from '@/components/stocks/stock-table/WarehouseFilter';
 import * as React from 'react';
+import StockChartTable from '../chart/StockChartTable';
 
 export default function ContentContainer() {
   const [warehouseId, setWarehouseId] = React.useState<string>('all');
@@ -18,6 +19,11 @@ export default function ContentContainer() {
           warehouseId={warehouseId === 'all' ? undefined : warehouseId}
         />
       </div>
+      {/* <div className="w-full max-w-full min-w-0">
+        <StockChartTable
+          warehouseId={warehouseId === 'all' ? undefined : warehouseId}
+        />
+      </div> */}
       <div className="w-full max-w-full min-w-0">
         <StockTable
           warehouseId={warehouseId === 'all' ? undefined : warehouseId}

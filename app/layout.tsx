@@ -4,6 +4,7 @@ import '../globals.css';
 
 import QueryProvider from '@/components/QueryProvider';
 import { ThemeProvider } from 'next-themes';
+import { AppToaster } from '@/components/ui/app-toaster';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,6 +39,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <AppToaster />
             {children}
           </ThemeProvider>
         </QueryProvider>

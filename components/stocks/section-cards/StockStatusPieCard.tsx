@@ -13,6 +13,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import {
   ChartContainer,
   ChartStyle,
   ChartTooltip,
@@ -27,7 +33,6 @@ export interface StockStatusPieCardProps {
 const chartConfig = {
   inStock: { label: 'In Stock', color: 'var(--chart-1)' },
   lowStock: { label: 'Low Stock', color: 'var(--chart-2)' },
-  needsReordering: { label: 'Needs Reordering', color: 'var(--chart-3)' },
 } satisfies ChartConfig;
 
 export function StockStatusPieCard({ warehouseId }: StockStatusPieCardProps) {
@@ -55,6 +60,7 @@ export function StockStatusPieCard({ warehouseId }: StockStatusPieCardProps) {
   }, [data]);
 
   const [activeStatus, setActiveStatus] = React.useState('all');
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const statuses = React.useMemo(
     () => ['all', ...pieData.map((item: any) => item.status)],
     [pieData]
@@ -65,28 +71,43 @@ export function StockStatusPieCard({ warehouseId }: StockStatusPieCardProps) {
   }, [activeStatus, pieData]);
 
   return (
-    <Card data-chart={id} className="flex flex-col h-full min-h-[340px]">
+    <Card data-chart={id} className="flex flex-col h-full min-h-85">
       <ChartStyle id={id} config={chartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0">
         <div className="grid gap-1">
           <CardTitle>Stock Status</CardTitle>
           <CardDescription>Distribution by status</CardDescription>
         </div>
-        <select
-          value={activeStatus}
-          onChange={(e) => setActiveStatus(e.target.value)}
-          className="ml-auto h-7 w-[130px] rounded-lg pl-2.5 border text-sm"
-        >
-          <option value="all">All</option>
-          {pieData.map((item: any) => (
-            <option key={item.status} value={item.status}>
-              {chartConfig[item.status as keyof typeof chartConfig]?.label ||
-                item.status}
-            </option>
-          ))}
-        </select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="ml-auto h-7 w-32.5 rounded-lg pl-2.5 border text-sm text-left">
+              {activeStatus === 'all'
+                ? 'All'
+                : chartConfig[activeStatus as keyof typeof chartConfig]
+                    ?.label || activeStatus}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40 p-0">
+            <DropdownMenuItem
+              onSelect={() => setActiveStatus('all')}
+              className={activeStatus === 'all' ? 'font-bold' : ''}
+            >
+              All
+            </DropdownMenuItem>
+            {pieData.map((item: any) => (
+              <DropdownMenuItem
+                key={item.status}
+                onSelect={() => setActiveStatus(item.status)}
+                className={activeStatus === item.status ? 'font-bold' : ''}
+              >
+                {chartConfig[item.status as keyof typeof chartConfig]?.label ||
+                  item.status}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center items-center pb-0 min-h-[220px]">
+      <CardContent className="flex flex-1 justify-center items-center pb-0 min-h-55">
         {isLoading ? (
           <div className="flex items-center justify-center w-full h-full">
             Loading...
@@ -99,7 +120,7 @@ export function StockStatusPieCard({ warehouseId }: StockStatusPieCardProps) {
           <ChartContainer
             id={id}
             config={chartConfig}
-            className="mx-auto aspect-square w-full max-w-[260px] min-w-[180px]"
+            className="mx-auto aspect-square w-full max-w-65 min-w-45"
           >
             <PieChart>
               <ChartTooltip

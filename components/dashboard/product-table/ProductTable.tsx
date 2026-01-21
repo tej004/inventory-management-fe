@@ -90,7 +90,7 @@ const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: 'isDeleted',
-    header: 'Deleted',
+    header: 'Status',
     cell: ({ row }) =>
       row.getValue('isDeleted') ? (
         <Badge variant="destructive">Deleted</Badge>
@@ -186,7 +186,7 @@ export default function ProductTable() {
     queryFn: () => productService.listPaginated(params),
   });
 
-  const products: Product[] = data?.data || [];
+  const products: Product[] = data || [];
   const total = data?.meta?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
@@ -217,7 +217,7 @@ export default function ProductTable() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-row items-center justify-between gap-2 py-4 w-full flex-wrap">
+      <div className="flex flex-row items-center justify-between gap-2 pt-2 pb-4 w-full flex-wrap">
         <Input
           placeholder="Filter by name or SKU..."
           value={filter}

@@ -40,7 +40,7 @@ const productService = {
   listPaginated: async (params: PaginatedParams) => {
     try {
       const res = await api.get('/products/paginated', { params });
-      return res.data.data;
+      return res.data.data.data;
     } catch (error) {
       console.error('Paginated products error:', error);
       return null;
