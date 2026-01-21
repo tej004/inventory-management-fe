@@ -31,7 +31,8 @@ export default function WarehouseFilter({
         <SelectItem value="all">All Warehouses</SelectItem>
         {warehouses?.map((w: any) => (
           <SelectItem key={w.uuid} value={w.uuid}>
-            {w.name}
+            {w.code}{' '}
+            <span className="text-xs text-muted-foreground">{w.name}</span>
           </SelectItem>
         ))}
       </SelectContent>

@@ -19,6 +19,17 @@ export interface PaginatedParams {
 }
 
 const productService = {
+  search: async (search: string) => {
+    try {
+      const res = await api.get('/products/paginated', {
+        params: { search, page: 1, limit: 10 },
+      });
+      return res.data.data.data;
+    } catch (error) {
+      console.error('Search products error:', error);
+      return [];
+    }
+  },
   create: async (data: Product) => {
     try {
       const res = await api.post('/products', data);

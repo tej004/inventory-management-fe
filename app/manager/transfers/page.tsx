@@ -1,5 +1,5 @@
 import TitleLayout from '@/components/title/TitleLayout';
-import ContentContainer from '@/components/transfers/ContentContainer';
+import ContentContainer from '@/components/transfers/content/ContentContainer';
 
 export default function TransfersPage() {
   return (
