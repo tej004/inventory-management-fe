@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  app:
+  inventory_management_fe:
     build: .
     container_name: inventory-management-fe
     ports:
