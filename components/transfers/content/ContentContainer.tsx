@@ -110,23 +110,39 @@ export default function ContentContainer() {
         </TabsList>
         <TabsContent value="pending">
           <PendingTransfersTab
-            fromWarehouseId={fromWarehouseId}
-            toWarehouseId={toWarehouseId}
+            fromWarehouseId={
+              fromWarehouseId === 'all' ? undefined : fromWarehouseId
+            }
+            toWarehouseId={toWarehouseId === 'all' ? undefined : toWarehouseId}
             productId={productId}
           />
         </TabsContent>
         <TabsContent value="approved">
           <ApprovedTransfersTab
-            fromWarehouseId={fromWarehouseId}
-            toWarehouseId={toWarehouseId}
+            fromWarehouseId={
+              fromWarehouseId === 'all' ? undefined : fromWarehouseId
+            }
+            toWarehouseId={toWarehouseId === 'all' ? undefined : toWarehouseId}
             productId={productId}
           />
         </TabsContent>
         <TabsContent value="received">
-          <ReceivedTransfersTab />
+          <ReceivedTransfersTab
+            fromWarehouseId={
+              fromWarehouseId === 'all' ? undefined : fromWarehouseId
+            }
+            toWarehouseId={toWarehouseId === 'all' ? undefined : toWarehouseId}
+            productId={productId}
+          />
         </TabsContent>
         <TabsContent value="rejected">
-          <RejectedTransfersTab />
+          <RejectedTransfersTab
+            fromWarehouseId={
+              fromWarehouseId === 'all' ? undefined : fromWarehouseId
+            }
+            toWarehouseId={toWarehouseId === 'all' ? undefined : toWarehouseId}
+            productId={productId}
+          />
         </TabsContent>
       </Tabs>
     </div>
