@@ -1,9 +1,6 @@
-'use client';
-
 import * as React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import warehouseService, { Warehouse } from '@/services/warehouse.service';
-import { Input } from '@/components/ui/input';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import transactionService from '@/services/transaction.service';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -13,40 +10,32 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
-import useDebounce from '@/hooks/use-debounce';
-import { MoreHorizontal } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import WarehouseModal from '../modal/WarehouseModal';
+import TransactionModal from '../modal/TransactionModal';
 
-export default function WarehouseTable() {
-  const [searchInput, setSearchInput] = React.useState('');
-  const debouncedSearch = useDebounce(searchInput, 400);
+interface TransactionTableProps {
+  warehouseId?: string;
+  productId?: string;
+}
+
+export default function TransactionTable({
+  warehouseId,
+  productId,
+}: TransactionTableProps) {
   const [page, setPage] = React.useState(1);
   const [limit, setLimit] = React.useState(10);
   const [modalOpen, setModalOpen] = React.useState(false);
-  const [editing, setEditing] = React.useState<Warehouse | null>(null);
+  const [editing, setEditing] = React.useState(null);
 
-  const params: Record<string, any> = { page, limit, search: debouncedSearch };
+  const params: Record<string, any> = { page, limit };
+  if (warehouseId) params.warehouseId = warehouseId;
+  if (productId) params.productId = productId;
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['paginatedWarehouses', page, limit, debouncedSearch],
-    queryFn: () => warehouseService.listPaginated(params),
+    queryKey: ['paginatedTransactions', page, limit],
+    queryFn: () => transactionService.listPaginated(params),
   });
 
-  // when debounced search value changes, reset to first page
-  React.useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch]);
-
-  const warehouses: Warehouse[] = data || [];
+  const transactions = data?.data || [];
   const total = data?.meta?.total || 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
@@ -55,103 +44,75 @@ export default function WarehouseTable() {
     setModalOpen(true);
   }
 
-  function openEdit(w: Warehouse) {
-    setEditing(w);
-    setModalOpen(true);
-  }
-
-  async function handleDelete(uuid?: string) {
-    if (!uuid) return;
-    if (!confirm('Delete this warehouse?')) return;
-    const ok = await warehouseService.delete(uuid);
-    if (ok) {
-      toast.success('Warehouse deleted');
-      refetch();
-    } else {
-      toast.error('Failed to delete');
-    }
-  }
-
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between gap-2 pb-4 w-full flex-wrap">
-        <Input
-          placeholder="Search warehouses..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="min-w-0 w-full max-w-xs"
-        />
+      <div className="flex items-center justify-end gap-2 pb-4 w-full flex-wrap">
         <div className="flex items-center gap-2">
-          <Button onClick={openCreate}>Create Warehouse</Button>
+          <Button onClick={openCreate}>Create Transaction</Button>
         </div>
       </div>
 
       <div className="overflow-x-auto overflow-y-visible rounded-md border w-full max-w-full">
-        <table className="min-w-[600px] w-full text-sm">
+        <table className="min-w-[900px] w-full text-sm">
           <thead>
             <tr>
               <th className="px-2 py-1 bg-muted text-left font-semibold">
-                Code
+                Type
               </th>
               <th className="px-2 py-1 bg-muted text-left font-semibold">
-                Name
+                Reason
               </th>
               <th className="px-2 py-1 bg-muted text-left font-semibold">
-                Location
+                Quantity
+              </th>
+              <th className="px-2 py-1 bg-muted text-left font-semibold">
+                Product
+              </th>
+              <th className="px-2 py-1 bg-muted text-left font-semibold">
+                Category
+              </th>
+              <th className="px-2 py-1 bg-muted text-left font-semibold">
+                Warehouse
               </th>
               <th className="px-2 py-1 bg-muted text-left font-semibold">
                 Created
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
-                Actions
               </th>
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
               <tr>
-                <td colSpan={5} className="text-center py-4">
+                <td colSpan={8} className="text-center py-4">
                   Loading...
                 </td>
               </tr>
-            ) : warehouses.length === 0 ? (
+            ) : transactions.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-4">
-                  No warehouses found.
+                <td colSpan={8} className="text-center py-4">
+                  No transactions found.
                 </td>
               </tr>
             ) : (
-              warehouses.map((w) => (
-                <tr key={w.uuid} className="odd:bg-muted/5">
-                  <td className="px-2 py-1 font-mono font-medium tracking-tight">
-                    {w.code}
-                  </td>
-                  <td className="px-2 py-1">{w.name}</td>
-                  <td className="px-2 py-1">{w.location}</td>
-                  <td className="px-2 py-1 text-xs text-muted-foreground">
-                    {w['createdAt']
-                      ? new Date((w as any).createdAt).toLocaleString()
+              transactions.map((t: any) => (
+                <tr key={t.uuid} className="odd:bg-muted/5">
+                  <td className="px-2 py-1">
+                    {t.type
+                      ? t.type.charAt(0).toUpperCase() + t.type.slice(1)
                       : '-'}
                   </td>
                   <td className="px-2 py-1">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => openEdit(w)}>
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDelete(w.uuid)}>
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {t.reason
+                      ? t.reason.charAt(0).toUpperCase() + t.reason.slice(1)
+                      : '-'}
+                  </td>
+                  <td className="px-2 py-1">
+                    {t.quantity != null ? t.quantity : '-'}
+                  </td>
+                  <td className="px-2 py-1">{t.product?.name || '-'}</td>
+                  <td className="px-2 py-1">{t.product?.category || '-'}</td>
+                  <td className="px-2 py-1">{t.warehouse?.name || '-'}</td>
+                  <td className="px-2 py-1 text-xs text-muted-foreground">
+                    {t.createdAt ? new Date(t.createdAt).toLocaleString() : '-'}
                   </td>
                 </tr>
               ))
@@ -232,12 +193,14 @@ export default function WarehouseTable() {
           </div>
         </div>
       </div>
-
-      <WarehouseModal
+      <TransactionModal
         open={modalOpen}
-        onOpenChange={(o) => setModalOpen(o)}
-        warehouse={editing}
-        onSaved={() => refetch()}
+        onOpenChange={setModalOpen}
+        onSuccess={() => {
+          setModalOpen(false);
+          refetch();
+        }}
+        editing={editing}
       />
     </div>
   );

@@ -27,20 +27,16 @@ import {
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useQuery } from '@tanstack/react-query';
 import transactionService from '@/services/transaction.service';
-import { getDateRange } from '@/lib/date-range';
+import { getDateRange } from '@/lib/dateRange';
 
 export const description = 'An interactive area chart';
-
-// No custom colors, preserve default chart styling
 
 export function ChartTable() {
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState('90d');
 
-  // Get date range for query
   const { startDate, endDate } = getDateRange(timeRange);
 
-  // Fetch data
   const {
     data: chartData,
     isLoading,
@@ -51,7 +47,6 @@ export function ChartTable() {
       transactionService.dailyWarehouseSales({ startDate, endDate }),
   });
 
-  // Get all warehouse keys from the first data row (excluding 'date')
   const warehouseKeys = React.useMemo(() => {
     if (!chartData || chartData.length === 0) return [];
     return Object.keys(chartData[0]).filter((key) => key !== 'date');
@@ -178,5 +173,4 @@ export function ChartTable() {
       </CardContent>
     </Card>
   );
-  // ...existing code...
 }

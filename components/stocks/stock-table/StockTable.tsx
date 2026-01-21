@@ -218,7 +218,7 @@ export default function StockTable({ warehouseId }: StockTableProps) {
       />
       <div className="flex flex-row items-center gap-2 pb-4 w-full flex-wrap">
         <Input
-          placeholder="Filter by product or warehouse..."
+          placeholder="Search by product or warehouse..."
           value={filterInput}
           onChange={(e) => setFilterInput(e.target.value)}
           className="min-w-0 w-full sm:w-1/4 max-w-full"
@@ -321,6 +321,18 @@ export default function StockTable({ warehouseId }: StockTableProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={async () => {
+                            if (row.original.uuid) {
+                              await navigator.clipboard.writeText(
+                                row.original.uuid
+                              );
+                              toast.success('Stock UUID copied!');
+                            }
+                          }}
+                        >
+                          Copy UUID
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDeleteStock(row.original.uuid)}
                         >

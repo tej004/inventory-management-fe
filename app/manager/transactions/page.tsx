@@ -1,5 +1,5 @@
 import TitleLayout from '@/components/title/TitleLayout';
-import ContentContainer from '@/components/transactions/ContentContainer';
+import ContentContainer from '@/components/transactions/content/ContentContainer';
 
 export default function TransactionsPage() {
   return (

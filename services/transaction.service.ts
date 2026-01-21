@@ -12,8 +12,7 @@ const transactionService = {
       const res = await api.post('/transactions', data);
       return res.data;
     } catch (error) {
-      console.error('Create transaction error:', error);
-      return null;
+      throw error;
     }
   },
   list: async (): Promise<any[] | null> => {
@@ -28,7 +27,7 @@ const transactionService = {
   listPaginated: async (params: PaginatedParams): Promise<any> => {
     try {
       const res = await api.get('/transactions/paginated', { params });
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error('Paginated transactions error:', error);
       return null;
@@ -78,6 +77,57 @@ const transactionService = {
       return res.data.data;
     } catch (error) {
       console.error('Daily warehouse sales error:', error);
+      return null;
+    }
+  },
+
+  totalTransactionValue: async (params: {
+    warehouseId?: string;
+    productId?: string;
+    startDate: string;
+    endDate: string;
+    reason?: string;
+  }): Promise<number | null> => {
+    try {
+      const res = await api.get('/transactions/stats/total-transaction-value', {
+        params,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Total transaction value error:', error);
+      return null;
+    }
+  },
+
+  totalSalesValueAllTime: async (params: {
+    warehouseId?: string;
+    productId?: string;
+  }): Promise<number | null> => {
+    try {
+      const res = await api.get(
+        '/transactions/stats/total-sales-value-all-time',
+        { params }
+      );
+      return res.data.data;
+    } catch (error) {
+      console.error('Total sales value (all time) error:', error);
+      return null;
+    }
+  },
+
+  dailySalesChart: async (params: {
+    warehouseId?: string;
+    productId?: string;
+    startDate: string;
+    endDate: string;
+  }): Promise<Array<{ date: string; totalSales: number }> | null> => {
+    try {
+      const res = await api.get('/transactions/stats/daily-sales-chart', {
+        params,
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error('Daily sales chart error:', error);
       return null;
     }
   },

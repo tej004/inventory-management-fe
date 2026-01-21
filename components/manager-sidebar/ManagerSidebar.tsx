@@ -21,10 +21,10 @@ import {
 const navItems = [
   { label: 'Dashboard', href: '/manager/dashboard', icon: Home },
   { label: 'Stocks', href: '/manager/stocks', icon: Boxes },
-  { label: 'Warehouses', href: '/manager/warehouses', icon: Package },
-  { label: 'Products', href: '/manager/products', icon: BarChart },
   { label: 'Transactions', href: '/manager/transactions', icon: CreditCard },
   { label: 'Transfers', href: '/manager/transfers', icon: Repeat },
+  { label: 'Warehouses', href: '/manager/warehouses', icon: Package },
+  { label: 'Products', href: '/manager/products', icon: BarChart },
 ];
 
 import { SidebarTrigger } from '@/components/ui/sidebar';

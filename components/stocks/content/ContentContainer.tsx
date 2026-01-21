@@ -1,9 +1,9 @@
 'use client';
 import StocksSectionCards from '@/components/stocks/section-cards/StocksSectionCards';
 import StockTable from '@/components/stocks/stock-table/StockTable';
-import WarehouseFilter from '@/components/stocks/stock-table/WarehouseFilter';
 import * as React from 'react';
 import StockChartTable from '../chart/StockChartTable';
+import WarehouseFilter from '@/components/filters/WarehouseFilter';
 
 export default function ContentContainer() {
   const [warehouseId, setWarehouseId] = React.useState<string>('all');
