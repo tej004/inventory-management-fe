@@ -1,7 +1,9 @@
 ## Implementation Summary
 
-**Developer:** Tomas Jubile T. Libago  
-**Completion Time:** January 22, 2025 10:00PM
+**Developer:** Tomas Jubile T. Libago
+
+**Completion Time:** January 22, 2025 10:47pm PHT
+
 **Features completed:** Task 1 and Task 2
 
 ### Key Technical Decisions
@@ -14,16 +16,18 @@
 
 ### Known Limitations
 
+- Responsiveness
 - No authentication/authorization implemented
 - No backend included in this repo
 - No end-to-end or integration tests provided
 - Error handling is basic (toast only)
 
-
 ### Video Walkthrough
-- TBD
+
+- https://www.loom.com/share/34d8b8a3d1aa4298818e4dca2bab9989
 
 ### New Dependencies Added
+
 - @tanstack/react-query
 - shadcn/ui
 - sonner (toast notifications)
