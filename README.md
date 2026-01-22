@@ -34,3 +34,47 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+## Implementation Summary
+
+**Developer:** Tomas Jubile T. Libago  
+**Completion Time:** January 22, 2025 10:00PM
+**Features completed:** Task 1 and Task 2
+
+### Key Technical Decisions
+
+- Used Next.js App Router for modern routing and layouts
+- State and data fetching managed with @tanstack/react-query
+- UI built with shadcn/ui and custom minimalist components
+- Modular hooks for filter and query invalidation logic
+- Multi-stage Dockerfile for efficient production builds
+
+### Known Limitations
+
+- No authentication/authorization implemented
+- No backend included in this repo (API endpoints assumed)
+- No end-to-end or integration tests provided
+- Error handling is basic (toast only)
+- No mobile-specific UI optimizations
+
+### Testing Instructions
+
+1. Install dependencies: `npm install`
+2. Run locally: `npm run dev` (visit http://localhost:3000)
+3. Or build and run with Docker:
+   - `docker-compose up --build`
+   - Visit http://localhost:3000
+4. Try creating, approving, rejecting, and receiving transfers
+5. Use filters to test warehouse/product filtering
+
+### Video Walkthrough
+
+### New Dependencies Added
+
+- @tanstack/react-query
+- shadcn/ui
+- sonner (toast notifications)
+
+---
