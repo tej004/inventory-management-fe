@@ -36,7 +36,7 @@ export default function TransactionTable({
   });
 
   const transactions = data?.data || [];
-  const total = data?.meta?.total || 0;
+  const total = data?.total || 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   function openCreate() {

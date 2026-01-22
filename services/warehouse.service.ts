@@ -40,7 +40,7 @@ const warehouseService = {
   listPaginated: async (params: PaginatedParams) => {
     try {
       const res = await api.get('/warehouses/paginated', { params });
-      return res.data.data.data;
+      return res.data.data;
     } catch (error) {
       console.error('Paginated warehouses error:', error);
       return null;

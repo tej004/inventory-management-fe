@@ -159,7 +159,7 @@ export default function StockTable({ warehouseId }: StockTableProps) {
   });
 
   const stocks: Stock[] = data?.data || [];
-  const total = data?.meta?.total || 0;
+  const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
   const table = useReactTable({
