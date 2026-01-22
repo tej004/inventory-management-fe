@@ -186,8 +186,8 @@ export default function ProductTable() {
     queryFn: () => productService.listPaginated(params),
   });
 
-  const products: Product[] = data || [];
-  const total = data?.meta?.total || 0;
+  const products: Product[] = data?.data || [];
+  const total = data?.total || 0;
   const totalPages = Math.ceil(total / limit);
 
   const table = useReactTable({

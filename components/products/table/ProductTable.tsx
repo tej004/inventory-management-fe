@@ -47,8 +47,8 @@ export default function ProductTable() {
     setPage(1);
   }, [debouncedSearch]);
 
-  const products: Product[] = data || [];
-  const total = data?.meta?.total || 0;
+  const products: Product[] = data?.data || [];
+  const total = data?.total || 0;
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   function openCreate() {
