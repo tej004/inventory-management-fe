@@ -7,12 +7,12 @@ import ReceivedTransfersTab from '../tabs/ReceivedTransfersTab';
 import RejectedTransfersTab from '../tabs/RejectedTransfersTab';
 import WarehouseFilter from '../../filters/WarehouseFilter';
 import ProductFilter from '../../filters/ProductFilter';
-import useTransferFilters from '@/hooks/useTransferFilters';
 import { Button } from '@/components/ui/button';
 import transferService from '@/services/transfer.service';
 import { toast } from 'sonner';
 import TransferFormModal from '../modal/TransferFormModal';
 import { useInvalidateTransferPage } from '@/components/transactions/hooks/useInvalidateTransferPage';
+import useTransferFilters from '../hooks/useTransferFilters';
 
 export default function ContentContainer() {
   const {
