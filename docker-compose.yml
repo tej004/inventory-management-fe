@@ -11,3 +11,9 @@ services:
       - .:/app
     command: npm run build && npm start
     restart: unless-stopped
+    networks:
+      - logistics_network
+
+networks:
+  logistics_network:
+    external: true
