@@ -1,5 +1,6 @@
 export function getDateRange(timeRange: string) {
   const referenceDate = new Date();
+  referenceDate.setDate(referenceDate.getDate() + 1); // Set to tomorrow
   let daysToSubtract = 90;
   if (timeRange === '30d') {
     daysToSubtract = 30;
