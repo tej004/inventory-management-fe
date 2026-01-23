@@ -49,15 +49,13 @@ export default function ReceivedTransfersTab({
         </div>
       )}
       {!isLoading && !isError && transfers.length > 0 && (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col w-full">
           {transfers.map((transfer: any) => (
-            <div key={transfer.uuid} className="w-[60%]">
-              <TransferItem transfer={transfer} />
-            </div>
+            <TransferItem key={transfer.uuid} transfer={transfer} />
           ))}
         </div>
       )}
-      <div className="flex gap-2 mt-4 items-center justify-center">
+      <div className="flex gap-2 mt-4 items-center justify-center w-full">
         <button
           className="btn btn-outline btn-sm"
           disabled={page === 1}

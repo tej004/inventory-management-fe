@@ -61,7 +61,7 @@ export default function ContentContainer() {
 
   return (
     <div className="flex flex-col gap-4 w-full max-w-full min-w-0">
-      <div className="flex gap-4 mb-2 items-end">
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 mb-2 items-stretch sm:items-end">
         <div className="flex flex-col">
           <label className="mb-1 text-xs font-medium text-muted-foreground">
             From Warehouse
@@ -91,7 +91,11 @@ export default function ContentContainer() {
             showAllOption={true}
           />
         </div>
-        <Button onClick={() => setModalOpen(true)} size="sm">
+        <Button
+          onClick={() => setModalOpen(true)}
+          size="sm"
+          className="w-full sm:w-auto mt-2 sm:mt-0"
+        >
           Create Transfer
         </Button>
       </div>
@@ -102,7 +106,7 @@ export default function ContentContainer() {
         loading={creating}
       />
       <Tabs defaultValue="pending" className="w-full">
-        <TabsList>
+        <TabsList className="overflow-x-auto whitespace-nowrap w-full">
           <TabsTrigger value="pending">Pending</TabsTrigger>
           <TabsTrigger value="approved">Approved</TabsTrigger>
           <TabsTrigger value="received">Received</TabsTrigger>

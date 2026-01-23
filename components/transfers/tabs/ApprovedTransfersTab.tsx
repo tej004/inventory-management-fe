@@ -60,26 +60,25 @@ export default function ApprovedTransfersTab({
         </div>
       )}
       {!isLoading && !isError && transfers.length > 0 && (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col w-full">
           {transfers.map((transfer: any) => (
-            <div key={transfer.uuid} className="w-[60%]">
-              <TransferItem
-                transfer={transfer}
-                actions={
-                  <Button
-                    size="sm"
-                    variant="default"
-                    onClick={() => handleReceive(transfer.uuid)}
-                  >
-                    Receive
-                  </Button>
-                }
-              />
-            </div>
+            <TransferItem
+              key={transfer.uuid}
+              transfer={transfer}
+              actions={
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={() => handleReceive(transfer.uuid)}
+                >
+                  Receive
+                </Button>
+              }
+            />
           ))}
         </div>
       )}
-      <div className="flex gap-2 mt-4 items-center justify-center">
+      <div className="flex gap-2 mt-4 items-center justify-center w-full">
         <Button
           variant="outline"
           size="sm"

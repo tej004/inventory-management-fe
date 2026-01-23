@@ -55,7 +55,7 @@ export default function PendingTransfersTab({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col w-full gap-4">
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error loading transfers.</div>}
       {!isLoading && !isError && transfers.length === 0 && (
@@ -64,35 +64,34 @@ export default function PendingTransfersTab({
         </div>
       )}
       {!isLoading && !isError && transfers.length > 0 && (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col w-full">
           {transfers.map((transfer: any) => (
-            <div key={transfer.uuid} className="w-[60%]">
-              <TransferItem
-                transfer={transfer}
-                actions={
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={() => handleApprove(transfer.uuid)}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => handleReject(transfer.uuid)}
-                    >
-                      Reject
-                    </Button>
-                  </div>
-                }
-              />
-            </div>
+            <TransferItem
+              key={transfer.uuid}
+              transfer={transfer}
+              actions={
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="default"
+                    onClick={() => handleApprove(transfer.uuid)}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => handleReject(transfer.uuid)}
+                  >
+                    Reject
+                  </Button>
+                </div>
+              }
+            />
           ))}
         </div>
       )}
-      <div className="flex gap-2 mt-4 items-center justify-center">
+      <div className="flex gap-2 mt-4 items-center justify-center w-full">
         <Button
           variant="outline"
           size="sm"
