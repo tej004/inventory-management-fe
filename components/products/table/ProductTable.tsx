@@ -13,6 +13,14 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from '@/components/ui/table';
 import { toast } from 'sonner';
 import { MoreHorizontal } from 'lucide-react';
 import {
@@ -23,7 +31,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-
 import useDebounce from '@/hooks/use-debounce';
 import ProductModal from '@/components/products/modal/ProductModal';
 
@@ -89,57 +96,59 @@ export default function ProductTable() {
       </div>
 
       <div className="overflow-x-auto overflow-y-visible rounded-md border w-full max-w-full">
-        <table className="min-w-[600px] w-full text-sm">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+        <Table className="min-w-[600px] w-full text-sm">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 SKU
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Name
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Category
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Unit Cost
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Reorder Point
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Created
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={7} className="text-center py-4">
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">
                   Loading...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : products.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center py-4">
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">
                   No products found.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               products.map((p) => (
-                <tr key={p.uuid} className="odd:bg-muted/5">
-                  <td className="px-2 py-1 font-mono text-xs">{p.sku}</td>
-                  <td className="px-2 py-1">{p.name}</td>
-                  <td className="px-2 py-1">{p.category}</td>
-                  <td className="px-2 py-1">{p.unitCost}</td>
-                  <td className="px-2 py-1">{p.reorderPoint}</td>
-                  <td className="px-2 py-1 text-xs text-muted-foreground">
+                <TableRow key={p.uuid} className="odd:bg-muted/5">
+                  <TableCell className="px-2 py-1 font-mono text-xs">
+                    {p.sku}
+                  </TableCell>
+                  <TableCell className="px-2 py-1">{p.name}</TableCell>
+                  <TableCell className="px-2 py-1">{p.category}</TableCell>
+                  <TableCell className="px-2 py-1">{p.unitCost}</TableCell>
+                  <TableCell className="px-2 py-1">{p.reorderPoint}</TableCell>
+                  <TableCell className="px-2 py-1 text-xs text-muted-foreground">
                     {p.createdAt ? new Date(p.createdAt).toLocaleString() : '-'}
-                  </td>
-                  <td className="px-2 py-1">
+                  </TableCell>
+                  <TableCell className="px-2 py-1">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -158,12 +167,12 @@ export default function ProductTable() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-4 py-3 bg-background rounded-b-md">
