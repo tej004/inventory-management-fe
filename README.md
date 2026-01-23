@@ -16,9 +16,9 @@
 
 ### Known Limitations
 
-- Responsiveness
+- Total responsiveness across all pages (Prioritized mobile responsiveness)
 - No authentication/authorization implemented
-- No backend included in this repo
+- No backend included in this repo (Used NestJS backend which is on a separate repository)
 - No end-to-end or integration tests provided
 - Error handling is basic (toast only)
 
