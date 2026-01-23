@@ -32,6 +32,14 @@ import { Product } from '@/types/types/product.type';
 
 import { Badge } from '@/components/ui/badge';
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
@@ -250,13 +258,13 @@ export default function ProductTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="overflow-x-auto overflow-y-visible rounded-md border w-full max-w-full">
-        <table className="min-w-[600px] w-full text-sm">
-          <thead>
+      <div className="rounded-md border w-full max-w-full overflow-x-auto">
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th
+                  <TableHead
                     key={header.id}
                     className="px-2 py-1 bg-muted text-left font-semibold"
                   >
@@ -266,63 +274,62 @@ export default function ProductTable() {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                  </th>
+                  </TableHead>
                 ))}
-              </tr>
+              </TableRow>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {isLoading ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={table.getAllColumns().length}
                   className="text-center py-4"
                 >
                   Loading...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : isError ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={table.getAllColumns().length}
                   className="text-center text-destructive py-4"
                 >
                   Failed to load products.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : table.getRowModel().rows.length === 0 ? (
-              <tr>
-                <td
+              <TableRow>
+                <TableCell
                   colSpan={table.getAllColumns().length}
                   className="text-center py-4"
                 >
                   No products found.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr
+                <TableRow
                   key={row.id}
                   className={row.original.isDeleted ? 'opacity-60' : ''}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-2 py-1">
+                    <TableCell key={cell.id} className="px-2 py-1">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </td>
+                    </TableCell>
                   ))}
-                </tr>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-4 py-3 bg-background rounded-b-md">
         <div className="text-muted-foreground flex-1 text-sm hidden sm:flex">
-          {/* Selection count: update if you add row selection */}0 of {total}{' '}
-          row(s) selected.
+          0 of {total} row(s) selected.
         </div>
         <div className="flex w-full items-center gap-6 sm:w-fit">
           <div className="hidden items-center gap-2 sm:flex">
@@ -333,7 +340,7 @@ export default function ProductTable() {
               value={String(limit)}
               onValueChange={(value) => {
                 setLimit(Number(value));
-                setPage(1); // Reset to first page when changing page size
+                setPage(1);
               }}
             >
               <SelectTrigger size="sm" className="w-20" id="rows-per-page">
