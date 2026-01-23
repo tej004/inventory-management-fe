@@ -103,7 +103,7 @@ export default function TransferFormModal({
               showAllOption={false}
             />
           </div>
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <div className="flex flex-col gap-1 flex-1">
               <label className="text-xs font-medium text-muted-foreground">
                 From Warehouse
@@ -166,6 +166,7 @@ export default function TransferFormModal({
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
               required
+              className="w-full"
             />
           </div>
           <DialogFooter>
