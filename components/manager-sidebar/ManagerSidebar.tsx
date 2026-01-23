@@ -29,16 +29,18 @@ const navItems = [
 ];
 
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { ThemeToggle } from '../ui/theme-toggle';
 
 export default function ManagerSidebar() {
-  const { setOpenMobile, isMobile } = useSidebar();
+  const { setOpenMobile, isMobile, state } = useSidebar();
   const handleNavClick = () => {
     if (isMobile) setOpenMobile(false);
   };
   return (
     <>
-      <div className="fixed top-4 left-2 z-50 md:hidden">
-        <SidebarTrigger className="rounded-full shadow-md bg-background p-4" />
+      <div className="fixed top-4 left-2 z-50 flex flex-row gap-2 md:hidden">
+        <SidebarTrigger className="size-7 p-0 rounded-full shadow-md bg-background" />
+        <ThemeToggle />
       </div>
       <Sidebar collapsible="icon">
         <SidebarContent>
@@ -65,8 +67,9 @@ export default function ManagerSidebar() {
           </SidebarGroup>
         </SidebarContent>
         <div className="flex-1 flex flex-col justify-end hidden md:flex">
-          <div className="flex justify-end pb-4 pr-3">
-            <SidebarTrigger className="rounded-full shadow-md" />
+          <div className="flex flex-col gap-2 items-end pb-4 pr-3">
+            <ThemeToggle />
+            <SidebarTrigger className="rounded-full bg-background shadow-md" />
           </div>
         </div>
       </Sidebar>
