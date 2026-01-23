@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import {
   Home,
@@ -27,13 +28,17 @@ const navItems = [
   { label: 'Products', href: '/manager/products', icon: BarChart },
 ];
 
-import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 
 export default function ManagerSidebar() {
+  const { setOpenMobile, isMobile } = useSidebar();
+  const handleNavClick = () => {
+    if (isMobile) setOpenMobile(false);
+  };
   return (
     <>
-      <div className="fixed top-4 left-4 z-50 md:hidden">
-        <SidebarTrigger className="rounded-full shadow-md bg-background p-2" />
+      <div className="fixed top-4 left-2 z-50 md:hidden">
+        <SidebarTrigger className="rounded-full shadow-md bg-background p-4" />
       </div>
       <Sidebar collapsible="icon">
         <SidebarContent>
@@ -44,7 +49,11 @@ export default function ManagerSidebar() {
                 {navItems.map(({ label, href, icon: Icon }) => (
                   <SidebarMenuItem key={label}>
                     <SidebarMenuButton asChild>
-                      <Link href={href} className="flex items-center gap-3">
+                      <Link
+                        href={href}
+                        className="flex items-center gap-3"
+                        onClick={handleNavClick}
+                      >
                         <Icon className="h-5 w-5" />
                         <span className="truncate">{label}</span>
                       </Link>
