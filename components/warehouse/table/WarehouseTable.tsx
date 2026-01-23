@@ -13,6 +13,14 @@ import {
   SelectItem,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from '@/components/ui/table';
 import { toast } from 'sonner';
 import useDebounce from '@/hooks/use-debounce';
 import { MoreHorizontal } from 'lucide-react';
@@ -87,53 +95,53 @@ export default function WarehouseTable() {
       </div>
 
       <div className="overflow-x-auto overflow-y-visible rounded-md border w-full max-w-full">
-        <table className="min-w-[600px] w-full text-sm">
-          <thead>
-            <tr>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+        <Table className="min-w-[600px] w-full text-sm">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Code
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Name
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Location
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Created
-              </th>
-              <th className="px-2 py-1 bg-muted text-left font-semibold">
+              </TableHead>
+              <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                 Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {isLoading ? (
-              <tr>
-                <td colSpan={5} className="text-center py-4">
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-4">
                   Loading...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : warehouses.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="text-center py-4">
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-4">
                   No warehouses found.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               warehouses.map((w) => (
-                <tr key={w.uuid} className="odd:bg-muted/5">
-                  <td className="px-2 py-1 font-mono font-medium tracking-tight">
+                <TableRow key={w.uuid} className="odd:bg-muted/5">
+                  <TableCell className="px-2 py-1 font-mono font-medium tracking-tight">
                     {w.code}
-                  </td>
-                  <td className="px-2 py-1">{w.name}</td>
-                  <td className="px-2 py-1">{w.location}</td>
-                  <td className="px-2 py-1 text-xs text-muted-foreground">
+                  </TableCell>
+                  <TableCell className="px-2 py-1">{w.name}</TableCell>
+                  <TableCell className="px-2 py-1">{w.location}</TableCell>
+                  <TableCell className="px-2 py-1 text-xs text-muted-foreground">
                     {w['createdAt']
                       ? new Date((w as any).createdAt).toLocaleString()
                       : '-'}
-                  </td>
-                  <td className="px-2 py-1">
+                  </TableCell>
+                  <TableCell className="px-2 py-1">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -152,12 +160,12 @@ export default function WarehouseTable() {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-4 py-3 bg-background rounded-b-md">
