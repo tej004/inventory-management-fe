@@ -22,7 +22,7 @@ export default function WarehouseFilter({
   const warehouses = data || [];
   return (
     <Select value={value || 'all'} onValueChange={onChange}>
-      <SelectTrigger className="w-56">
+      <SelectTrigger className="w-full sm:w-56">
         <SelectValue
           placeholder={isLoading ? 'Loading...' : 'All Warehouses'}
         />
