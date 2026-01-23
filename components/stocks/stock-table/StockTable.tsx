@@ -13,6 +13,14 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import stockService from '@/services/stock.service';
 import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -250,12 +258,12 @@ export default function StockTable({ warehouseId }: StockTableProps) {
         </Button>
       </div>
       <div className="overflow-x-auto overflow-y-visible rounded-md border w-full max-w-full">
-        <table className="min-w-150 w-full text-sm">
-          <thead>
+        <Table>
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th
+                  <TableHead
                     key={header.id}
                     className="px-2 py-1 bg-muted text-left font-semibold"
                   >
@@ -265,54 +273,54 @@ export default function StockTable({ warehouseId }: StockTableProps) {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                  </th>
+                  </TableHead>
                 ))}
-                <th className="px-2 py-1 bg-muted text-left font-semibold">
+                <TableHead className="px-2 py-1 bg-muted text-left font-semibold">
                   Actions
-                </th>
-              </tr>
+                </TableHead>
+              </TableRow>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {isLoading ? (
-              <tr>
-                <td
-                  colSpan={table.getAllColumns().length}
+              <TableRow>
+                <TableCell
+                  colSpan={table.getAllColumns().length + 1}
                   className="text-center py-4"
                 >
                   Loading...
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : isError ? (
-              <tr>
-                <td
-                  colSpan={table.getAllColumns().length}
+              <TableRow>
+                <TableCell
+                  colSpan={table.getAllColumns().length + 1}
                   className="text-center text-destructive py-4"
                 >
                   Failed to load stocks.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : table.getRowModel().rows.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={table.getAllColumns().length}
+              <TableRow>
+                <TableCell
+                  colSpan={table.getAllColumns().length + 1}
                   className="text-center py-4"
                 >
                   No stocks found.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               table.getRowModel().rows.map((row: any) => (
-                <tr key={row.id}>
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell: any) => (
-                    <td key={cell.id} className="px-2 py-1">
+                    <TableCell key={cell.id} className="px-2 py-1">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
                       )}
-                    </td>
+                    </TableCell>
                   ))}
-                  <td className="px-2 py-1">
+                  <TableCell className="px-2 py-1">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
@@ -340,12 +348,12 @@ export default function StockTable({ warehouseId }: StockTableProps) {
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-4 py-3 bg-background rounded-b-md">
         <div className="text-muted-foreground flex-1 text-sm hidden sm:flex">
