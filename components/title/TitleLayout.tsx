@@ -12,7 +12,7 @@ export default function TitleLayout({
   children,
 }: TitleLayoutProps) {
   return (
-    <div>
+    <div className="pt-8 md:pt-0">
       <PageTitle title={title} description={description} />
       <main>{children}</main>
     </div>
